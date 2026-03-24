@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #f8fafc;
+  --color-foreground: #1e293b;
+  --color-primary: #2563eb;
+  --color-secondary: #64748b;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: Arial, Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer utilities {
+  .page-title {
+    @apply text-4xl font-black text-gray-900 tracking-tighter mb-8;
+  }
+  .section-title {
+    @apply text-2xl font-bold text-gray-800 tracking-tight mb-4;
+  }
+}
