@@ -11,3 +11,4 @@
 - [x] Verify functionality and Docker build
 - [x] Add .gitignore
 - [x] Initialize Git repository and first commit
+- [ ] Add remote and push to GitHub
