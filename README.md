@@ -16,16 +16,10 @@ A high-performance, professional-grade Human Resource Management System (HRMS) b
 - **Backend**: FastAPI (Python 3.13), SQLAlchemy 2.0, PostgreSQL.
 - **Orchestration**: Docker & Docker Compose.
 
----
-
 ## 🚀 Deployment
 
-The system is optimized for high-performance cloud hosting. For a comprehensive, step-by-step guide on how to deploy the Backend to **Render** and the Frontend to **Vercel**, please refer to our:
-
-👉 **[Detailed Deployment Guide](docs/deployment_guide.md)**
-
-### Quick Overview:
-- **Frontend**: Next.js 15 on **Vercel**.
+The system is optimized for high-performance cloud hosting:
+- **Frontend**: Next.js 15 on **Vercel** or **Netlify**.
 - **Backend**: Dockerized FastAPI on **Render**.
 - **Database**: Managed PostgreSQL on **Render**.
 
