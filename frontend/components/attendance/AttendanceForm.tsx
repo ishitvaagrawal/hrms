@@ -68,8 +68,8 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({ employees, onSubmit, on
           label="Status" 
           required
           options={[
-            { value: 'PRESENT', label: 'Present' },
-            { value: 'ABSENT', label: 'Absent' },
+            { value: 'Present', label: 'Present' },
+            { value: 'Absent', label: 'Absent' },
           ]}
         />
       </div>

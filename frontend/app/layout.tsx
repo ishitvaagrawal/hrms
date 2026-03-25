@@ -32,7 +32,7 @@ export default function RootLayout({
           {children}
         </main>
         <footer className="bg-white border-t border-gray-100 py-8 text-center text-gray-400 text-sm">
-          &copy; {new Date().getFullYear()} HRMS Lite System. Built for excellence.
+          Welcome to Dashboard
         </footer>
       </body>
     </html>

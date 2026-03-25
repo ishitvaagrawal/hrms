@@ -71,14 +71,9 @@ export default function DashboardPage() {
   });
 
   const handleCreateEmployee = async (employeeData: Omit<Employee, 'id' | 'created_at'>) => {
-    try {
-      await api.createEmployee(employeeData);
-      setIsAddModalOpen(false);
-      await loadDashboard();
-    } catch (err) {
-      console.error(err);
-      alert(err instanceof Error ? err.message : 'Failed to create employee');
-    }
+    await api.createEmployee(employeeData);
+    setIsAddModalOpen(false);
+    await loadDashboard();
   };
 
   const handleDeleteEmployee = async (id: string) => {

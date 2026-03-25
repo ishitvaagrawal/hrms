@@ -41,26 +41,20 @@ const connectGlobal = () => {
   }
   
   const wsUrl = `${protocol}//${host}/ws`;
-  console.log(`[Subscription Singleton] Connecting to ${wsUrl}...`);
   
   try {
     const socket = new WebSocket(wsUrl);
-
-    socket.onopen = () => {
-      console.log('[Subscription Singleton] Connected to real-time updates');
-    };
 
     socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
         g.subscribers.forEach(sub => sub(data));
       } catch (err) {
-        console.error('[Subscription Singleton] Failed to parse message', err);
+        // Silent fail on message parse in production
       }
     };
 
-    socket.onclose = (event) => {
-      console.warn(`[Subscription Singleton] Disconnected: code=${event.code}. Reconnecting in 5s...`);
+    socket.onclose = () => {
       g.socket = null;
       g.reconnectTimeout = setTimeout(() => {
         g.reconnectTimeout = null;
@@ -68,13 +62,12 @@ const connectGlobal = () => {
       }, 5000);
     };
 
-    socket.onerror = (err) => {
-      console.error('[Subscription Singleton] WebSocket Error detected.', err);
+    socket.onerror = () => {
+      // WebSocket level error handling
     };
 
     g.socket = socket;
   } catch (err) {
-    console.error('[Subscription Singleton] Failed to create WebSocket', err);
     g.reconnectTimeout = setTimeout(() => {
       g.reconnectTimeout = null;
       connectGlobal();

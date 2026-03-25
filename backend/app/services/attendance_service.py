@@ -1,25 +1,24 @@
 from datetime import datetime
 from sqlalchemy.orm import Session
-from sqlalchemy import select, and_
-from sqlalchemy.exc import SQLAlchemyError
-from app.models import Attendance, Employee
-from app.schemas import AttendanceCreate, AttendanceBulkCreate
-from fastapi import HTTPException, status
-from uuid import UUID
+from sqlalchemy import select, and_, func
 
 class AttendanceService:
+    """
+    Handle business logic for Attendance tracking, summaries, and bulk operations.
+    """
     @staticmethod
     def mark_attendance(db: Session, attendance_data: AttendanceCreate):
+        """Record attendance for an employee. Ensures unique daily entry per employee."""
         try:
-            # Verify employee exists
+            # Validate employee existence
             employee = db.get(Employee, attendance_data.employee_id)
             if not employee:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Employee not found"
+                    detail="Employee profile not found."
                 )
 
-            # Check for duplicate attendance on the same date
+            # Enforce unique daily attendance constraint
             existing_attendance = db.scalars(
                 select(Attendance).where(
                     and_(
@@ -32,7 +31,7 @@ class AttendanceService:
             if existing_attendance:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Attendance already marked for this employee on this date"
+                    detail="Attendance has already been recorded for this employee on the selected date."
                 )
 
             new_attendance = Attendance(
@@ -44,133 +43,119 @@ class AttendanceService:
             db.commit()
             db.refresh(new_attendance)
             return new_attendance
-        except SQLAlchemyError as e:
+        except SQLAlchemyError as err:
             db.rollback()
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Database error while marking attendance: {str(e)}"
-            )
-        except HTTPException:
-            raise
-        except Exception as e:
-            db.rollback()
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Unexpected error: {str(e)}"
+                detail=f"Failed to record attendance: {str(err)}"
             )
 
     @staticmethod
-    def get_employee_attendance(db: Session, employee_internal_id: UUID, skip: int = 0, limit: int = 100):
+    def get_employee_attendance(db: Session, employee_id: UUID, skip: int = 0, limit: int = 100):
+        """Fetch paginated attendance history for a specific employee."""
         try:
-            # Verify employee exists
-            employee = db.get(Employee, employee_internal_id)
+            employee = db.get(Employee, employee_id)
             if not employee:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Employee not found"
+                    detail="Employee profile not found."
                 )
             
             return db.scalars(
                 select(Attendance)
-                .where(Attendance.employee_id == employee_internal_id)
+                .where(Attendance.employee_id == employee_id)
                 .order_by(Attendance.attendance_date.desc())
                 .offset(skip)
                 .limit(limit)
             ).all()
-        except SQLAlchemyError as e:
+        except SQLAlchemyError as err:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Database error while fetching attendance: {str(e)}"
+                detail=f"Failed to retrieve attendance history: {str(err)}"
             )
 
     @staticmethod
     def delete_attendance(db: Session, attendance_id: UUID):
+        """Hard-delete an individual attendance record."""
         try:
             attendance = db.get(Attendance, attendance_id)
             if not attendance:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Attendance record not found"
+                    detail="Attendance record not found."
                 )
-            # Hard Delete
+            
             db.delete(attendance)
             db.commit()
-            return {"detail": "Attendance record deleted successfully (hard-delete)"}
-        except SQLAlchemyError as e:
+            return {"detail": "Attendance record successfully removed."}
+        except SQLAlchemyError as err:
             db.rollback()
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Database error while deleting attendance: {str(e)}"
+                detail=f"Failed to remove attendance record: {str(err)}"
             )
 
     @staticmethod
     def bulk_mark_attendance(db: Session, bulk_data: AttendanceBulkCreate):
+        """Perform batch update/creation of attendance for multiple employees."""
         try:
-            results = []
-            for emp_id in bulk_data.employee_ids:
-                # Verify employee exists
-                employee = db.get(Employee, emp_id)
+            processed_records = []
+            for employee_id in bulk_data.employee_ids:
+                # Validate employee existence
+                employee = db.get(Employee, employee_id)
                 if not employee:
-                    continue # Skip if employee doesn't exist
+                    continue 
 
-                # Format date to normalize (discard time if needed, but the model handles DateTime)
-                # However, for uniqueness, we should probably normalize to date if it's meant to be daily.
-                # The model uses DateTime.
-                
-                # Check for existing attendance
-                existing = db.scalars(
+                # Check for existing entry to decide between Update or Create
+                existing_record = db.scalars(
                     select(Attendance).where(
                         and_(
-                            Attendance.employee_id == emp_id,
+                            Attendance.employee_id == employee_id,
                             Attendance.attendance_date == bulk_data.attendance_date
                         )
                     )
                 ).first()
 
-                if existing:
-                    # Update status if already exists
-                    existing.status = bulk_data.status
-                    results.append(existing)
+                if existing_record:
+                    existing_record.status = bulk_data.status
+                    processed_records.append(existing_record)
                 else:
-                    # Create new
-                    new_attendance = Attendance(
-                        employee_id=emp_id,
+                    new_record = Attendance(
+                        employee_id=employee_id,
                         attendance_date=bulk_data.attendance_date,
                         status=bulk_data.status
                     )
-                    db.add(new_attendance)
-                    results.append(new_attendance)
+                    db.add(new_record)
+                    processed_records.append(new_record)
             
             db.commit()
-            for r in results:
-                db.refresh(r)
-            return results
-        except SQLAlchemyError as e:
+            for record in processed_records:
+                db.refresh(record)
+            return processed_records
+        except SQLAlchemyError as err:
             db.rollback()
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Database error during bulk attendance marking: {str(e)}"
+                detail=f"Batch attendance operation failed: {str(err)}"
             )
 
     @staticmethod
     def get_attendance_by_date(db: Session, date: datetime):
+        """Retrieve all attendance records for a specific date."""
         try:
-            # Normalize date to start of day for broader matching if needed, 
-            # but here we follow the exact match pattern.
             return db.scalars(
                 select(Attendance).where(Attendance.attendance_date == date)
             ).all()
-        except SQLAlchemyError as e:
+        except SQLAlchemyError as err:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Database error while fetching attendance by date: {str(e)}"
+                detail=f"Failed to fetch attendance for {date.date()}: {str(err)}"
             )
 
     @staticmethod
     def get_attendance_summary(db: Session):
-        from sqlalchemy import func
+        """Generate a global summary of Present/Absent counts per employee."""
         try:
-            # Query results: employee_id, status, count
             summary_query = db.execute(
                 select(
                     Attendance.employee_id,
@@ -179,19 +164,18 @@ class AttendanceService:
                 ).group_by(Attendance.employee_id, Attendance.status)
             ).all()
             
-            # Format into {employee_id: {Present: X, Absent: Y}}
-            results = {}
+            summary_map = {}
             for row in summary_query:
-                emp_id = str(row.employee_id)
-                if emp_id not in results:
-                    results[emp_id] = {"Present": 0, "Absent": 0}
-                results[emp_id][row.status] = row.count
+                employee_key = str(row.employee_id)
+                if employee_key not in summary_map:
+                    summary_map[employee_key] = {"Present": 0, "Absent": 0}
+                summary_map[employee_key][row.status] = row.count
                 
-            return results
-        except SQLAlchemyError as e:
+            return summary_map
+        except SQLAlchemyError as err:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Database error while fetching attendance summary: {str(e)}"
+                detail=f"Failed to generate attendance summary: {str(err)}"
             )
 
 attendance_service = AttendanceService()
