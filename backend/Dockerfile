@@ -20,5 +20,5 @@ ENTRYPOINT ["/entrypoint.sh"]
 # Expose port
 EXPOSE 10000
 
-# Run uvicorn
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "10000"]
+# Run uvicorn using the PORT environment variable provided by Render
+CMD sh -c "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-10000}"
