@@ -58,20 +58,35 @@ The backend is dockerized and will run as a Web Service.
 
 ---
 
-## Step 3: Deploy Frontend (Vercel)
+## Step 3: Deploy Frontend (Vercel OR Netlify)
 The frontend is a Next.js application located in the `frontend` directory.
 
+### Option A: Vercel (Recommended)
 1.  **Log in** to your Vercel Dashboard.
 2.  Click **Add New...** -> **Project**.
 3.  **Import** your GitHub repository.
 4.  **Configure Project**:
     - **Project Name**: `hrms-management-hub`
     - **Framework Preset**: `Next.js`
-    - **Root Directory**: Click the **Edit** button next to the "Root Directory" field and select the `frontend` folder from the tree view.
-    - **Production Branch**: Ensure this is set to `deploy/production-ready` (or your active branch).
+    - **Root Directory**: Click **Edit** and select the `frontend` folder.
+    - **Production Branch**: Ensure this is set to `deploy/production-ready`.
 5.  **Environment Variables**:
-    - `NEXT_PUBLIC_API_URL`: Your Render Backend URL (e.g., `https://hrms-backend.onrender.com`).
+    - `NEXT_PUBLIC_API_URL`: Your Render Backend URL (e.g., `https://api.onrender.com`).
 6.  Click **Deploy**.
+
+### Option B: Netlify
+1.  **Log in** to your Netlify Dashboard.
+2.  Click **Add new site** -> **Import an existing project**.
+3.  Connect to **GitHub** and select your repository.
+4.  **Site configuration**:
+    - **Base directory**: `frontend`
+    - **Build command**: `npm run build`
+    - **Publish directory**: `frontend/.next` (Netlify usually detects this for Next.js).
+    - **Branch to deploy**: `deploy/production-ready`.
+5.  **Environment variables**:
+    - Click **Add environment variables**.
+    - `NEXT_PUBLIC_API_URL`: Your Render Backend URL.
+6.  Click **Deploy site**.
 7.  **Verification**: Once finished, Vercel will provide a URL (e.g., `https://hrms-management-hub.vercel.app`). Open it to see your HRMS Dashboard.
 
 ---
