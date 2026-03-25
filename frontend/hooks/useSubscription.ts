@@ -32,12 +32,10 @@ const connectGlobal = () => {
   if (!g || g.socket || g.reconnectTimeout) return;
 
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  let host = process.env.NEXT_PUBLIC_API_URL || '';
+  let host = process.env.NEXT_PUBLIC_API_URL || 'localhost:8000';
   
   if (host.startsWith('http')) {
     host = host.replace(/^https?:\/\//, '');
-  } else if (!host) {
-    host = 'localhost:8000';
   }
   
   const wsUrl = `${protocol}//${host}/ws`;

@@ -1,6 +1,11 @@
 from datetime import datetime
+from uuid import UUID
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import select, and_, func
+from sqlalchemy.exc import SQLAlchemyError
+from app.models import Employee, Attendance
+from app.schemas import AttendanceCreate, AttendanceBulkCreate
 
 class AttendanceService:
     """

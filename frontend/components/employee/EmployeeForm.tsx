@@ -10,7 +10,7 @@ const employeeSchema = z.object({
   employee_id: z.string()
     .min(3, 'ID must be at least 3 characters')
     .max(50, 'ID too long')
-    .regex(/^[A-Z0-9-]+$/, 'ID can only contain uppercase letters, numbers, and hyphens'),
+    .regex(/^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/? ]+$/, 'ID can contain letters, numbers, and special characters'),
   full_name: z.string()
     .min(2, 'Name too short')
     .max(100, 'Name too long'),

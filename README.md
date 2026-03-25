@@ -20,25 +20,21 @@ A high-performance, professional-grade Human Resource Management System (HRMS) b
 
 ## 🚀 Deployment
 
-The system is optimized for high-performance cloud hosting:
+The system is optimized for high-performance cloud hosting. For a comprehensive, step-by-step guide on how to deploy the Backend to **Render** and the Frontend to **Vercel**, please refer to our:
 
-### 1. 🎨 Frontend (Vercel)
-1.  Connect your repository to **Vercel**.
-2.  Set the **Root Directory** to `frontend`.
-3.  **Environment Variables**:
-    - `NEXT_PUBLIC_API_URL`: Your Render backend URL (e.g., `https://api.your-hub.com`).
+👉 **[Detailed Deployment Guide](docs/deployment_guide.md)**
 
-### 2. ⚙️ Backend (Render)
-1.  Create a new **Web Service** on Render and connect your repository.
-2.  **Environment**: `Python 3`.
-3.  **Build Command**: `pip install -r requirements.txt`.
-4.  **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port 8000`.
-5.  **Environment Variables**:
-    - `DATABASE_URL`: Your Render PostgreSQL connection string.
+### Quick Overview:
+- **Frontend**: Next.js 15 on **Vercel**.
+- **Backend**: Dockerized FastAPI on **Render**.
+- **Database**: Managed PostgreSQL on **Render**.
 
-### 3. 🛡️ Database (Render PostgreSQL)
-1.  Create a new **PostgreSQL** instance on Render.
-    - Ensure it's in the same region as your Web Service for low latency.
+---
+
+## 🌐 Live URLs
+
+*   **Frontend**: `https://hrms-management-hub.vercel.app` (Example)
+*   **Backend**: `https://hrms-lite-api.onrender.com` (Example)
 
 ---
 

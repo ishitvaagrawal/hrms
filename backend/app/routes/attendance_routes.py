@@ -39,7 +39,7 @@ def get_attendance(
 ):
     return attendance_service.get_employee_attendance(
         db=db, 
-        employee_internal_id=employee_id, 
+        employee_id=employee_id, 
         skip=skip, 
         limit=limit
     )

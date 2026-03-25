@@ -5,11 +5,11 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 class Settings(BaseSettings):
-    postgres_user: str
-    postgres_password: str
-    postgres_db: str
-    postgres_host: str
-    postgres_port: int
+    postgres_user: str | None = None
+    postgres_password: str | None = None
+    postgres_db: str | None = None
+    postgres_host: str | None = None
+    postgres_port: int | None = None
     database_url: str
 
     model_config = SettingsConfigDict(

@@ -1,17 +1,21 @@
 import { Employee, Attendance, AttendanceStatus } from '@/types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+if (!API_URL) {
+  console.warn('NEXT_PUBLIC_API_URL is not defined. Falling back to http://localhost:8000');
+}
+const BASE_URL = API_URL || 'http://localhost:8000';
 
 export const api = {
   // Employees
   async getEmployees(): Promise<Employee[]> {
-    const res = await fetch(`${API_URL}/employees/`);
+    const res = await fetch(`${BASE_URL}/employees/`);
     if (!res.ok) throw new Error('Failed to fetch employees');
     return res.json();
   },
 
   async createEmployee(employee: Omit<Employee, 'id' | 'created_at'>): Promise<Employee> {
-    const res = await fetch(`${API_URL}/employees/`, {
+    const res = await fetch(`${BASE_URL}/employees/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(employee),
@@ -33,14 +37,14 @@ export const api = {
   },
 
   async deleteEmployee(id: string): Promise<void> {
-    const res = await fetch(`${API_URL}/employees/${id}`, {
+    const res = await fetch(`${BASE_URL}/employees/${id}`, {
       method: 'DELETE',
     });
     if (!res.ok) throw new Error('Failed to delete employee');
   },
 
   async bulkDeleteEmployees(ids: string[]): Promise<void> {
-    const res = await fetch(`${API_URL}/employees/bulk-delete`, {
+    const res = await fetch(`${BASE_URL}/employees/bulk-delete`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(ids),
@@ -50,7 +54,7 @@ export const api = {
 
   // Attendance
   async markAttendance(attendance: Omit<Attendance, 'id'>): Promise<Attendance> {
-    const res = await fetch(`${API_URL}/attendance/`, {
+    const res = await fetch(`${BASE_URL}/attendance/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(attendance),
@@ -60,13 +64,13 @@ export const api = {
   },
 
   async getAttendanceByEmployee(id: string, skip: number = 0, limit: number = 10): Promise<Attendance[]> {
-    const res = await fetch(`${API_URL}/attendance/${id}?skip=${skip}&limit=${limit}`);
+    const res = await fetch(`${BASE_URL}/attendance/${id}?skip=${skip}&limit=${limit}`);
     if (!res.ok) throw new Error('Failed to fetch attendance logs');
     return res.json();
   },
 
   async getAttendanceByDate(date: string): Promise<Attendance[]> {
-    const res = await fetch(`${API_URL}/attendance/date/${encodeURIComponent(date)}`);
+    const res = await fetch(`${BASE_URL}/attendance/date/${encodeURIComponent(date)}`);
     if (!res.ok) throw new Error('Failed to fetch attendance by date');
     return res.json();
   },
@@ -76,7 +80,7 @@ export const api = {
     attendance_date: string, 
     status: AttendanceStatus 
   }): Promise<Attendance[]> {
-    const response = await fetch(`${API_URL}/attendance/bulk`, {
+    const response = await fetch(`${BASE_URL}/attendance/bulk`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -86,7 +90,7 @@ export const api = {
   },
 
   async getAttendanceSummary(): Promise<Record<string, { Present: number; Absent: number }>> {
-    const response = await fetch(`${API_URL}/attendance/summary`);
+    const response = await fetch(`${BASE_URL}/attendance/summary`);
     if (!response.ok) throw new Error('Failed to fetch attendance summary');
     return response.json();
   }
