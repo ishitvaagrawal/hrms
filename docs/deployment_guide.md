@@ -53,7 +53,7 @@ The backend is dockerized and will run as a Web Service.
     - **Variable 2**:
         - Key: `PORT`
         - Value: `10000`
-8.  Click **Create Web Service** (or **Save Changes** if already created).
+8.  Click **Deploy Web Service** (or **Manual Deploy** -> **Clear Build Cache & Deploy** if already created).
 9.  **Verification**: Once deployed, visit `https://hrms-backend.onrender.com/` (use your actual URL). You should see `{"message": "Welcome to HRMS Lite API"}`.
 
 ---
