@@ -83,3 +83,24 @@ If the frontend shows "Failed to fetch", ensure `NEXT_PUBLIC_API_URL` does **not
 
 ### 4. WebSocket Updates
 The dashboard uses WebSockets. Render's Web Services support WebSockets out-of-the-box. If they fail, check if you are using `https://` (the frontend will automatically use `wss://`).
+
+---
+
+## 🏗️ How to Update your Deployment
+
+If you push new changes to GitHub *after* the initial build has started:
+
+### 1. Automatic Updates (Standard)
+Both Render and Vercel are configured by default to **automatically** start a new build whenever you push a change to your connected branch (e.g., `main` or `deploy/production-ready`).
+
+### 2. Manual Update (Render)
+If you want to force a re-deploy on Render (e.g., if a build failed or you changed environment variables):
+- Go to your Web Service dashboard.
+- Click the **Deploy** button (top right).
+- Select **Clear Build Cache & Deploy** to ensure a fresh build.
+
+### 3. Manual Update (Vercel)
+If you want to re-run a deployment on Vercel:
+- Go to the **Deployments** tab.
+- Click the three dots `...` next to the latest deployment.
+- Select **Redploy**.
