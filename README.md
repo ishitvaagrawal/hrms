@@ -25,10 +25,9 @@ The system is optimized for high-performance cloud hosting:
 
 ---
 
-## 🌐 Live URLs
+## 🌐 Live URL
 
-*   **Frontend**: `https://hrms-management-hub.vercel.app` (Example)
-*   **Backend**: `https://hrms-lite-api.onrender.com` (Example)
+- **Production App**: [https://hrms-management-hub.vercel.app](https://hrms-management-hub.vercel.app)
 
 ---
 
