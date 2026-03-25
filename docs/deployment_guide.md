@@ -68,6 +68,7 @@ The frontend is a Next.js application located in the `frontend` directory.
     - **Project Name**: `hrms-management-hub`
     - **Framework Preset**: `Next.js`
     - **Root Directory**: Click the **Edit** button next to the "Root Directory" field and select the `frontend` folder from the tree view.
+    - **Production Branch**: Ensure this is set to `deploy/production-ready` (or your active branch).
 5.  **Environment Variables**:
     - `NEXT_PUBLIC_API_URL`: Your Render Backend URL (e.g., `https://hrms-backend.onrender.com`).
 6.  Click **Deploy**.
