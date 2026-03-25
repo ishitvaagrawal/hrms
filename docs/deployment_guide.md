@@ -62,6 +62,7 @@ The backend is dockerized and will run as a Web Service.
 The frontend is a Next.js application located in the `frontend` directory.
 
 ### Option A: Vercel (Recommended)
+*Why? Vercel is the creator of Next.js. It provides the best support for Next.js 15 features (like Server Actions and Middleware) and generally offers the fastest build times.*
 1.  **Log in** to your Vercel Dashboard.
 2.  Click **Add New...** -> **Project**.
 3.  **Import** your GitHub repository.
@@ -87,7 +88,7 @@ The frontend is a Next.js application located in the `frontend` directory.
     - Click **Add environment variables**.
     - `NEXT_PUBLIC_API_URL`: Your Render Backend URL.
 6.  Click **Deploy site**.
-7.  **Verification**: Once finished, Vercel will provide a URL (e.g., `https://hrms-management-hub.vercel.app`). Open it to see your HRMS Dashboard.
+7.  **Verification**: Once finished, the platform will provide a URL (e.g., `https://your-site.netlify.app` or `https://your-site.vercel.app`). Open it to see your HRMS Dashboard.
 
 ---
 
