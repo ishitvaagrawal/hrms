@@ -49,7 +49,7 @@ The backend is dockerized and will run as a Web Service.
     - **Variable 1**:
         - Key: `DATABASE_URL`
         - Value: Paste the **Internal Database URL** from Step 1.
-        - *Ensure it looks like: `postgresql://user:pass@host:5432/db`*
+        - *Ensure it looks like: `postgresql+psycopg2://user:pass@host:5432/db`*
     - **Variable 2**:
         - Key: `PORT`
         - Value: `10000`
