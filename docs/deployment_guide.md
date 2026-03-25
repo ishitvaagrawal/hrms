@@ -44,11 +44,16 @@ The backend is dockerized and will run as a Web Service.
 5.  **Root Directory**: Type `backend` (Render will search for the Dockerfile within this subfolder).
 6.  **Language**: Select `Docker` from the dropdown.
 7.  **Environment Variables**:
-    - Click **Advanced** -> **Add Environment Variable**.
-    - `DATABASE_URL`: Paste the **Internal Database URL** from Step 1.
-      - **Note**: Ensure the URL starts with `postgresql+psycopg2://` (you may need to add `+psycopg2` to the Render URL).
-    - `PORT`: `10000` (Render's default, matching our Dockerfile).
-8.  Click **Create Web Service**.
+    - Scroll down to the **Advanced** section or click the **Environment** tab.
+    - Click **Add Environment Variable**.
+    - **Variable 1**:
+        - Key: `DATABASE_URL`
+        - Value: Paste the **Internal Database URL** from Step 1.
+        - *Ensure it looks like: `postgresql://user:pass@host:5432/db`*
+    - **Variable 2**:
+        - Key: `PORT`
+        - Value: `10000`
+8.  Click **Create Web Service** (or **Save Changes** if already created).
 9.  **Verification**: Once deployed, visit `https://hrms-backend.onrender.com/` (use your actual URL). You should see `{"message": "Welcome to HRMS Lite API"}`.
 
 ---
